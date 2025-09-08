@@ -29,6 +29,11 @@
             overflow-x: hidden;
             position: relative;
             cursor: crosshair;
+            /* تحسين الأداء */
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
         }
 
         /* شاشة التحميل المحسنة */
@@ -45,7 +50,7 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 1.2s ease;
             animation: gradient-shift 3s ease infinite;
         }
 
@@ -57,29 +62,21 @@
         .loading-screen.fade-out {
             opacity: 0;
             visibility: hidden;
-            transform: scale(1.2);
+            transform: scale(1.1);
         }
 
         .skull-loader {
             font-size: 120px;
             color: var(--danger-red);
-            animation: pulse-skull 1s ease-in-out infinite, rotate-skull 3s linear infinite;
+            animation: pulse-skull 1.5s ease-in-out infinite;
             margin-bottom: 30px;
-            text-shadow: 
-                0 0 30px var(--danger-red),
-                0 0 60px var(--danger-red),
-                0 0 90px var(--danger-red);
-            filter: drop-shadow(0 0 20px var(--danger-red));
+            text-shadow: 0 0 30px var(--danger-red);
+            will-change: transform;
         }
 
         @keyframes pulse-skull {
-            0%, 100% { transform: scale(1) rotateY(0deg); }
-            50% { transform: scale(1.3) rotateY(180deg); }
-        }
-
-        @keyframes rotate-skull {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
 
         .loading-text {
@@ -87,18 +84,14 @@
             color: var(--primary-green);
             margin-bottom: 30px;
             font-family: 'Share Tech Mono', monospace;
-            animation: type-effect 2s steps(25) infinite, neon-glow 2s ease-in-out infinite alternate;
+            animation: neon-glow 2s ease-in-out infinite alternate;
             text-transform: uppercase;
             letter-spacing: 3px;
         }
 
         @keyframes neon-glow {
-            from {
-                text-shadow: 0 0 10px var(--primary-green), 0 0 20px var(--primary-green);
-            }
-            to {
-                text-shadow: 0 0 20px var(--primary-green), 0 0 30px var(--primary-green), 0 0 40px var(--primary-green);
-            }
+            from { text-shadow: 0 0 10px var(--primary-green); }
+            to { text-shadow: 0 0 20px var(--primary-green), 0 0 30px var(--primary-green); }
         }
 
         .loading-bar {
@@ -109,16 +102,13 @@
             overflow: hidden;
             position: relative;
             border: 1px solid var(--primary-green);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
         }
 
         .loading-progress {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, var(--primary-green), var(--neon-blue), var(--danger-red), var(--electric-purple), var(--primary-green));
-            background-size: 300% 100%;
-            animation: loading-progress 2s ease-in-out forwards, rainbow-flow 1.5s linear infinite;
-            position: relative;
+            background: linear-gradient(90deg, var(--primary-green), var(--neon-blue), var(--danger-red));
+            animation: loading-progress 2s ease-in-out forwards;
         }
 
         @keyframes loading-progress {
@@ -126,12 +116,7 @@
             100% { width: 100%; }
         }
 
-        @keyframes rainbow-flow {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 300% 0%; }
-        }
-
-        /* الخلفية المتحركة المحسنة */
+        /* خلفية المصفوفة المحسنة - عدد أقل من العناصر */
         .matrix-bg {
             position: fixed;
             top: 0;
@@ -141,6 +126,7 @@
             pointer-events: none;
             z-index: 1;
             overflow: hidden;
+            opacity: 0.7;
         }
 
         .matrix-char {
@@ -148,67 +134,24 @@
             font-family: 'Fira Code', monospace;
             font-weight: bold;
             color: var(--primary-green);
-            opacity: 0.8;
-            animation: matrix-fall 4s linear infinite;
-            text-shadow: 0 0 10px currentColor;
+            animation: matrix-fall 6s linear infinite;
+            will-change: transform, opacity;
         }
 
         @keyframes matrix-fall {
             0% {
-                transform: translateY(-100vh) rotateX(0deg);
+                transform: translateY(-100vh);
                 opacity: 0;
             }
-            20% {
-                opacity: 0.8;
-                transform: rotateX(180deg);
-            }
-            80% {
-                opacity: 0.8;
-                transform: rotateX(360deg);
-            }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
             100% {
-                transform: translateY(100vh) rotateX(540deg);
+                transform: translateY(100vh);
                 opacity: 0;
             }
         }
 
-        /* تأثيرات الطاقة */
-        .energy-orbs {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .energy-orb {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
-            animation: float-orb 6s ease-in-out infinite;
-            box-shadow: 0 0 15px var(--neon-blue);
-        }
-
-        @keyframes float-orb {
-            0%, 100% {
-                transform: translateY(100vh) translateX(0) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            90% {
-                opacity: 1;
-                transform: scale(1.5);
-            }
-        }
-
-        /* الحاوية الرئيسية المحسنة */
+        /* الحاوية الرئيسية */
         .main-container {
             display: flex;
             flex-direction: column;
@@ -219,23 +162,15 @@
             position: relative;
             z-index: 2;
             opacity: 0;
-            transform: perspective(1000px) rotateX(90deg);
-            animation: epic-entrance 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            animation-delay: 2.2s;
+            transform: translateY(50px);
+            animation: fade-in-up 2s ease forwards;
+            animation-delay: 2.5s;
         }
 
-        @keyframes epic-entrance {
-            0% {
-                opacity: 0;
-                transform: perspective(1000px) rotateX(90deg) scale(0.5);
-            }
-            50% {
-                opacity: 0.7;
-                transform: perspective(1000px) rotateX(45deg) scale(0.8);
-            }
-            100% {
+        @keyframes fade-in-up {
+            to {
                 opacity: 1;
-                transform: perspective(1000px) rotateX(0deg) scale(1);
+                transform: translateY(0);
             }
         }
 
@@ -247,82 +182,48 @@
             text-align: center;
             margin-bottom: 30px;
             position: relative;
-            animation: mega-glitch 4s ease-in-out infinite;
+            animation: title-glow 3s ease-in-out infinite;
             text-transform: uppercase;
             letter-spacing: 8px;
-            background: linear-gradient(45deg, var(--danger-red), var(--electric-purple), var(--neon-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 30px var(--danger-red));
+            will-change: filter;
         }
 
         .main-title::before {
             content: '⚡💀⚡';
             position: absolute;
-            left: -120px;
+            left: -100px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 0.6em;
-            animation: lightning-skulls 1.5s linear infinite;
+            font-size: 0.5em;
+            animation: icon-rotate 3s linear infinite;
             color: var(--warning-yellow);
         }
 
         .main-title::after {
             content: '⚡💀⚡';
             position: absolute;
-            right: -120px;
+            right: -100px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 0.6em;
-            animation: lightning-skulls 1.5s linear infinite reverse;
+            font-size: 0.5em;
+            animation: icon-rotate 3s linear infinite reverse;
             color: var(--warning-yellow);
         }
 
-        @keyframes lightning-skulls {
-            0% { 
-                transform: translateY(-50%) rotate(0deg) scale(1);
-                text-shadow: 0 0 20px var(--warning-yellow);
-            }
-            25% { 
-                transform: translateY(-60%) rotate(90deg) scale(1.2);
-                text-shadow: 0 0 40px var(--warning-yellow);
+        @keyframes title-glow {
+            0%, 100% { 
+                text-shadow: 0 0 20px var(--danger-red);
+                filter: hue-rotate(0deg);
             }
             50% { 
-                transform: translateY(-40%) rotate(180deg) scale(0.8);
-                text-shadow: 0 0 60px var(--warning-yellow);
-            }
-            75% { 
-                transform: translateY(-60%) rotate(270deg) scale(1.1);
-                text-shadow: 0 0 30px var(--warning-yellow);
-            }
-            100% { 
-                transform: translateY(-50%) rotate(360deg) scale(1);
-                text-shadow: 0 0 20px var(--warning-yellow);
+                text-shadow: 0 0 30px var(--danger-red), 0 0 40px var(--danger-red);
+                filter: hue-rotate(90deg);
             }
         }
 
-        @keyframes mega-glitch {
-            0%, 100% { 
-                transform: translateX(0) skew(0deg);
-                filter: hue-rotate(0deg) drop-shadow(0 0 30px var(--danger-red));
-            }
-            10% { 
-                transform: translateX(-5px) skew(-2deg);
-                filter: hue-rotate(90deg) drop-shadow(0 0 40px var(--neon-blue));
-            }
-            20% { 
-                transform: translateX(5px) skew(2deg);
-                filter: hue-rotate(180deg) drop-shadow(0 0 50px var(--electric-purple));
-            }
-            30% { 
-                transform: translateX(-3px) skew(-1deg);
-                filter: hue-rotate(270deg) drop-shadow(0 0 35px var(--warning-yellow));
-            }
-            50% {
-                transform: translateX(0) skew(0deg) scale(1.05);
-                filter: hue-rotate(180deg) drop-shadow(0 0 60px var(--danger-red));
-            }
+        @keyframes icon-rotate {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
         }
 
         .subtitle {
@@ -331,7 +232,7 @@
             margin-bottom: 50px;
             text-align: center;
             font-family: 'Share Tech Mono', monospace;
-            animation: cyber-type 4s steps(40) 2s both, pulse-glow 2s ease-in-out infinite;
+            animation: pulse-glow 2s ease-in-out infinite;
             text-transform: uppercase;
             letter-spacing: 4px;
             border: 2px solid var(--primary-green);
@@ -342,40 +243,9 @@
             overflow: hidden;
         }
 
-        .subtitle::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.3), transparent);
-            animation: scan-subtitle 3s linear infinite;
-        }
-
-        @keyframes scan-subtitle {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        @keyframes cyber-type {
-            from { 
-                width: 0; 
-                border-color: transparent;
-            }
-            to { 
-                width: 100%; 
-                border-color: var(--primary-green);
-            }
-        }
-
         @keyframes pulse-glow {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 40px rgba(0, 255, 65, 0.8), 0 0 60px rgba(0, 255, 65, 0.3);
-            }
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 65, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 65, 0.8); }
         }
 
         /* أزرار الروابط المحسنة */
@@ -388,12 +258,7 @@
         }
 
         .hacker-link {
-            background: linear-gradient(135deg, 
-                rgba(0, 255, 65, 0.1) 0%, 
-                rgba(255, 0, 64, 0.1) 25%,
-                rgba(0, 212, 255, 0.1) 50%,
-                rgba(139, 0, 255, 0.1) 75%,
-                rgba(0, 255, 65, 0.1) 100%);
+            background: rgba(0, 255, 65, 0.1);
             border: 3px solid var(--primary-green);
             border-radius: 20px;
             padding: 25px 40px;
@@ -403,31 +268,20 @@
             font-weight: 700;
             text-align: center;
             position: relative;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.4s ease;
             overflow: hidden;
-            box-shadow: 
-                0 0 30px rgba(0, 255, 65, 0.4),
-                inset 0 0 30px rgba(0, 255, 65, 0.1);
             text-transform: uppercase;
             letter-spacing: 2px;
             font-family: 'Orbitron', monospace;
+            will-change: transform, box-shadow;
         }
 
         .hacker-link:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 0, 64, 0.2) 0%, 
-                rgba(0, 212, 255, 0.2) 25%,
-                rgba(139, 0, 255, 0.2) 50%,
-                rgba(255, 255, 0, 0.2) 75%,
-                rgba(255, 0, 64, 0.2) 100%);
+            background: rgba(255, 0, 64, 0.2);
             border-color: var(--danger-red);
             color: var(--danger-red);
-            box-shadow: 
-                0 0 50px rgba(255, 0, 64, 0.6),
-                inset 0 0 50px rgba(255, 0, 64, 0.2),
-                0 10px 30px rgba(255, 0, 64, 0.3);
-            transform: translateY(-10px) scale(1.08) rotateX(10deg);
-            text-shadow: 0 0 20px currentColor;
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 0, 64, 0.3);
         }
 
         .hacker-link::before {
@@ -437,12 +291,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.3), 
-                rgba(0, 212, 255, 0.3),
-                rgba(255, 255, 255, 0.3), 
-                transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.6s ease;
         }
 
@@ -450,61 +299,19 @@
             left: 100%;
         }
 
-        .hacker-link::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .hacker-link:hover::after {
-            opacity: 1;
-        }
-
         .link-icon {
             font-size: 2rem;
             margin-right: 20px;
             display: inline-block;
-            animation: icon-energy 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px currentColor);
+            animation: icon-pulse 2s ease-in-out infinite;
         }
 
-        @keyframes icon-energy {
-            0%, 100% { 
-                transform: scale(1) rotate(0deg);
-                filter: drop-shadow(0 0 10px currentColor);
-            }
-            25% { 
-                transform: scale(1.3) rotate(90deg);
-                filter: drop-shadow(0 0 20px currentColor);
-            }
-            50% { 
-                transform: scale(1.1) rotate(180deg);
-                filter: drop-shadow(0 0 30px currentColor);
-            }
-            75% { 
-                transform: scale(1.2) rotate(270deg);
-                filter: drop-shadow(0 0 15px currentColor);
-            }
-        }
-
-        .link-text {
-            display: inline-block;
-            position: relative;
-            animation: text-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes text-pulse {
+        @keyframes icon-pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.2); }
         }
 
-        /* تأثيرات الجسيمات المحسنة */
+        /* تأثيرات خفيفة للجسيمات */
         .particles {
             position: fixed;
             top: 0;
@@ -513,6 +320,7 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
+            opacity: 0.6;
         }
 
         .particle {
@@ -521,78 +329,38 @@
             height: 3px;
             border-radius: 50%;
             background: var(--neon-blue);
-            animation: epic-float 6s linear infinite;
-            box-shadow: 0 0 15px currentColor;
+            animation: float-up 8s linear infinite;
+            will-change: transform, opacity;
         }
 
-        @keyframes epic-float {
+        @keyframes float-up {
             0% {
-                transform: translateY(110vh) translateX(0) rotate(0deg) scale(0);
+                transform: translateY(110vh);
                 opacity: 0;
             }
-            10% { 
-                opacity: 1; 
-                transform: scale(1);
-            }
-            50% {
-                transform: translateY(50vh) translateX(100px) rotate(180deg) scale(1.5);
-                opacity: 1;
-            }
-            90% { 
-                opacity: 1; 
-                transform: scale(0.5);
-            }
+            10%, 90% { opacity: 1; }
             100% {
-                transform: translateY(-10vh) translateX(200px) rotate(360deg) scale(0);
+                transform: translateY(-10vh);
                 opacity: 0;
             }
         }
 
-        /* تأثيرات الهاكر المحسنة */
-        .hacker-effects {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
+        /* تأثير الخطوط الماسحة */
         .scan-line {
             position: absolute;
             width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--neon-blue), 
-                var(--primary-green), 
-                var(--danger-red), 
-                transparent);
-            animation: epic-scan 4s linear infinite;
-            box-shadow: 0 0 20px currentColor;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            animation: scan-move 4s linear infinite;
+            opacity: 0.8;
         }
 
-        @keyframes epic-scan {
-            0% { 
-                top: 0%; 
-                opacity: 1; 
-                width: 100%;
-            }
-            50% {
-                opacity: 1;
-                width: 80%;
-                left: 10%;
-            }
-            100% { 
-                top: 100%; 
-                opacity: 0; 
-                width: 60%;
-                left: 20%;
-            }
+        @keyframes scan-move {
+            0% { top: 0%; opacity: 1; }
+            100% { top: 100%; opacity: 0; }
         }
 
-        /* ASCII الجماجم المحسنة */
+        /* ASCII الجماجم */
         .ascii-skulls {
             position: fixed;
             font-family: 'Fira Code', monospace;
@@ -603,34 +371,26 @@
             white-space: pre;
             line-height: 1.2;
             font-weight: bold;
+            animation: skull-glow 5s ease-in-out infinite;
         }
 
         .skull-top-left {
             top: 30px;
             left: 30px;
-            animation: skull-glow 5s ease-in-out infinite;
         }
 
         .skull-bottom-right {
             bottom: 30px;
             right: 30px;
-            animation: skull-glow 5s ease-in-out infinite 2.5s;
+            animation-delay: 2.5s;
         }
 
         @keyframes skull-glow {
-            0%, 100% { 
-                opacity: 0.2;
-                transform: scale(1);
-                text-shadow: 0 0 10px currentColor;
-            }
-            50% { 
-                opacity: 0.7;
-                transform: scale(1.1);
-                text-shadow: 0 0 30px currentColor, 0 0 50px currentColor;
-            }
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
         }
 
-        /* تأثير الشاشة القديمة المحسن */
+        /* تأثير الشاشة القديمة المبسط */
         body::after {
             content: '';
             position: fixed;
@@ -638,87 +398,25 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    rgba(0, 255, 65, 0.02),
-                    rgba(0, 255, 65, 0.02) 1px,
-                    transparent 1px,
-                    transparent 3px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    rgba(0, 212, 255, 0.01),
-                    rgba(0, 212, 255, 0.01) 1px,
-                    transparent 1px,
-                    transparent 3px
-                );
-            pointer-events: none;
-            z-index: 10;
-            animation: screen-flicker 0.15s linear infinite;
-        }
-
-        @keyframes screen-flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.98; }
-        }
-
-        /* تأثيرات الإضاءة المحيطة */
-        .ambient-light {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(
-                circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-                rgba(0, 255, 65, 0.1) 0%, 
-                rgba(255, 0, 64, 0.05) 30%, 
-                transparent 70%
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 65, 0.02),
+                rgba(0, 255, 65, 0.02) 2px,
+                transparent 2px,
+                transparent 4px
             );
             pointer-events: none;
-            z-index: 0;
-            transition: all 0.3s ease;
+            z-index: 10;
+            opacity: 0.5;
         }
 
-        /* تأثيرات الانفجار */
-        .explosion {
-            position: fixed;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 0, 64, 0.6) 30%, transparent 70%);
-            pointer-events: none;
-            z-index: 15;
-            animation: explode 0.6s ease-out forwards;
-        }
-
-        @keyframes explode {
-            0% {
-                transform: scale(0) rotate(0deg);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.5) rotate(180deg);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(3) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* استجابة الشاشات الصغيرة */
+        /* استجابة للشاشات الصغيرة */
         @media (max-width: 768px) {
             .main-title::before,
             .main-title::after {
                 font-size: 0.4em;
-                left: -80px;
-                right: -80px;
-            }
-
-            .links-container {
-                max-width: 400px;
+                left: -60px;
+                right: -60px;
             }
 
             .hacker-link {
@@ -728,11 +426,6 @@
 
             .ascii-skulls {
                 font-size: 12px;
-            }
-
-            .subtitle {
-                font-size: 1.2rem;
-                padding: 12px 25px;
             }
         }
 
@@ -746,18 +439,10 @@
                 padding: 18px 25px;
                 font-size: 1.1rem;
             }
-
-            .link-icon {
-                font-size: 1.5rem;
-                margin-right: 15px;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- الإضاءة المحيطة -->
-    <div class="ambient-light"></div>
-
     <!-- شاشة التحميل -->
     <div class="loading-screen" id="loadingScreen">
         <div class="skull-loader">💀</div>
@@ -770,16 +455,11 @@
     <!-- خلفية المصفوفة -->
     <div class="matrix-bg" id="matrixBg"></div>
 
-    <!-- كرات الطاقة -->
-    <div class="energy-orbs" id="energyOrbs"></div>
-
     <!-- الجسيمات -->
     <div class="particles" id="particles"></div>
 
-    <!-- تأثيرات الهاكر -->
-    <div class="hacker-effects">
-        <div class="scan-line"></div>
-    </div>
+    <!-- خط المسح -->
+    <div class="scan-line"></div>
 
     <!-- جماجم ASCII -->
     <div class="ascii-skulls skull-top-left">    ⚡💀⚡
@@ -821,300 +501,144 @@
     </div>
 
     <script>
-        // متغيرات عامة
-        let mouseX = 0;
-        let mouseY = 0;
+        // متغيرات للتحكم في الأداء
+        const MAX_MATRIX_CHARS = 25; // تقليل العدد الأقصى
+        const MAX_PARTICLES = 15;
+        let matrixCharsCount = 0;
+        let particlesCount = 0;
 
         // إخفاء شاشة التحميل
         setTimeout(() => {
             const loadingScreen = document.getElementById('loadingScreen');
             loadingScreen.classList.add('fade-out');
-
             setTimeout(() => {
                 initializeEffects();
             }, 600);
         }, 2000);
 
-        // تهيئة جميع التأثيرات
+        // تهيئة التأثيرات المحسنة
         function initializeEffects() {
-            createEnhancedMatrixEffect();
-            createEnergyOrbs();
-            createParticles();
-            initializeMouseTracking();
-            initializeAudio();
+            createOptimizedMatrixEffect();
+            createOptimizedParticles();
+            initializeClickEffects();
         }
 
-        // تأثير المصفوفة المحسن
-        function createEnhancedMatrixEffect() {
+        // تأثير المصفوفة المحسن - عدد أقل وتردد أبطأ
+        function createOptimizedMatrixEffect() {
             const matrixBg = document.getElementById('matrixBg');
-            const chars = '01⚡💀🔥⭐️🌟💎⚡アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const colors = ['var(--primary-green)', 'var(--neon-blue)', 'var(--danger-red)', 'var(--electric-purple)', 'var(--warning-yellow)'];
+            const chars = '01⚡💀🔥アカサタナハマヤラワABCDEF';
 
             function createMatrixChar() {
+                if (matrixCharsCount >= MAX_MATRIX_CHARS) return;
+
                 const char = document.createElement('div');
                 char.className = 'matrix-char';
                 char.textContent = chars.charAt(Math.floor(Math.random() * chars.length));
                 char.style.left = Math.random() * 100 + '%';
-                char.style.color = colors[Math.floor(Math.random() * colors.length)];
-                char.style.fontSize = (Math.random() * 15 + 12) + 'px';
-                char.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                char.style.animationDelay = Math.random() * 2 + 's';
+                char.style.fontSize = (Math.random() * 10 + 12) + 'px';
+                char.style.animationDuration = (Math.random() * 3 + 4) + 's';
 
                 matrixBg.appendChild(char);
+                matrixCharsCount++;
 
                 setTimeout(() => {
-                    char.remove();
-                }, 4000);
+                    if (char.parentNode) {
+                        char.remove();
+                        matrixCharsCount--;
+                    }
+                }, 6000);
             }
 
-            setInterval(createMatrixChar, 80);
+            // تقليل التردد من 80ms إلى 200ms
+            setInterval(createMatrixChar, 200);
         }
 
-        // إنشاء كرات الطاقة
-        function createEnergyOrbs() {
-            const energyContainer = document.getElementById('energyOrbs');
-            const colors = ['var(--neon-blue)', 'var(--electric-purple)', 'var(--warning-yellow)', 'var(--primary-green)'];
-
-            function createEnergyOrb() {
-                const orb = document.createElement('div');
-                orb.className = 'energy-orb';
-                orb.style.left = Math.random() * 100 + '%';
-                orb.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]} 0%, transparent 70%)`;
-                orb.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                orb.style.animationDelay = Math.random() * 3 + 's';
-
-                energyContainer.appendChild(orb);
-
-                setTimeout(() => {
-                    orb.remove();
-                }, 8000);
-            }
-
-            setInterval(createEnergyOrb, 300);
-        }
-
-        // إنشاء الجسيمات المحسنة
-        function createParticles() {
+        // جسيمات محسنة
+        function createOptimizedParticles() {
             const particlesContainer = document.getElementById('particles');
-            const colors = ['var(--neon-blue)', 'var(--primary-green)', 'var(--danger-red)', 'var(--electric-purple)'];
 
             function createParticle() {
+                if (particlesCount >= MAX_PARTICLES) return;
+
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.left = Math.random() * 100 + '%';
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
-                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
 
                 particlesContainer.appendChild(particle);
+                particlesCount++;
 
                 setTimeout(() => {
-                    particle.remove();
+                    if (particle.parentNode) {
+                        particle.remove();
+                        particlesCount--;
+                    }
                 }, 8000);
             }
 
-            setInterval(createParticle, 150);
+            // تقليل التردد من 150ms إلى 500ms
+            setInterval(createParticle, 500);
         }
 
-        // تتبع الماوس للإضاءة المحيطة
-        function initializeMouseTracking() {
-            const ambientLight = document.querySelector('.ambient-light');
-
-            document.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX / window.innerWidth) * 100;
-                mouseY = (e.clientY / window.innerHeight) * 100;
-
-                ambientLight.style.setProperty('--mouse-x', mouseX + '%');
-                ambientLight.style.setProperty('--mouse-y', mouseY + '%');
-
-                // تأثير حركة المصفوفة
-                document.querySelectorAll('.matrix-char').forEach((char, index) => {
-                    const speed = 0.3 + (index % 5) * 0.1;
-                    const offsetX = (mouseX - 50) * speed;
-                    const offsetY = (mouseY - 50) * speed;
-                    char.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-                });
-            });
-        }
-
-        // تأثيرات الصوت المحاكية
-        function initializeAudio() {
-            let audioContext;
-            let oscillator;
-
-            function playHackerSound(frequency = 800, duration = 100) {
-                try {
-                    if (!audioContext) {
-                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    }
-
-                    oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-
-                    oscillator.frequency.value = frequency;
-                    oscillator.type = 'square';
-
-                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
-
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + duration / 1000);
-                } catch (e) {
-                    console.log('Audio not available');
-                }
-            }
-
-            // ربط الأصوات بالأحداث
+        // تأثيرات النقر المبسطة
+        function initializeClickEffects() {
             document.querySelectorAll('.hacker-link').forEach(link => {
-                link.addEventListener('mouseenter', () => playHackerSound(1000, 150));
-                link.addEventListener('click', () => {
-                    playHackerSound(1200, 200);
-                    createExplosion(event);
+                link.addEventListener('click', function(e) {
+                    // تأثير وميض بسيط
+                    document.body.style.filter = 'brightness(1.5)';
+                    setTimeout(() => {
+                        document.body.style.filter = '';
+                    }, 100);
+
+                    // تأثير اهتزاز بسيط
+                    this.style.transform = 'translateY(-10px) scale(1.05) rotateX(5deg)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+
+                link.addEventListener('mouseenter', function() {
+                    this.style.boxShadow = '0 10px 30px rgba(255, 0, 64, 0.4)';
+                });
+
+                link.addEventListener('mouseleave', function() {
+                    this.style.boxShadow = '';
                 });
             });
         }
 
-        // إنشاء تأثير الانفجار
-        function createExplosion(event) {
-            const explosion = document.createElement('div');
-            explosion.className = 'explosion';
-            explosion.style.left = (event.clientX - 100) + 'px';
-            explosion.style.top = (event.clientY - 100) + 'px';
-
-            document.body.appendChild(explosion);
-
-            setTimeout(() => {
-                explosion.remove();
-            }, 600);
-        }
-
-        // تأثيرات الكيبورد المحسنة
+        // تأثيرات الكيبورد المبسطة
         document.addEventListener('keydown', (e) => {
-            const effects = {
-                'Enter': () => {
-                    document.body.style.background = 'radial-gradient(circle at center, #00ff41 0%, #000000 100%)';
-                    setTimeout(() => {
-                        document.body.style.background = 'radial-gradient(circle at center, #0a0a0a 0%, #000000 100%)';
-                    }, 100);
-                },
-                ' ': () => {
-                    document.body.style.boxShadow = 'inset 0 0 200px rgba(255, 0, 64, 0.3)';
-                    setTimeout(() => {
-                        document.body.style.boxShadow = '';
-                    }, 200);
-                },
-                'Escape': () => {
-                    document.querySelectorAll('.hacker-link').forEach(link => {
-                        link.style.animation = 'mega-glitch 0.5s ease-in-out';
-                    });
-                }
-            };
-
-            if (effects[e.key]) {
-                effects[e.key]();
-            }
-        });
-
-        // تأثير الجليتش على النقر
-        document.querySelectorAll('.hacker-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                // إيقاف الرسوم المتحركة مؤقتاً
-                this.style.animation = 'none';
-                setTimeout(() => {
-                    this.style.animation = '';
-                }, 50);
-
-                // تأثير وميض الشاشة
-                const colors = ['#ff0040', '#00ff41', '#00d4ff', '#8b00ff'];
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                
-                document.body.style.background = randomColor;
-                setTimeout(() => {
-                    document.body.style.background = 'radial-gradient(circle at center, #0a0a0a 0%, #000000 100%)';
-                }, 80);
-
-                // إنشاء موجة صدمة
-                createShockwave(e.clientX, e.clientY);
-            });
-        });
-
-        // إنشاء موجة صدمة
-        function createShockwave(x, y) {
-            const shockwave = document.createElement('div');
-            shockwave.style.cssText = `
-                position: fixed;
-                left: ${x}px;
-                top: ${y}px;
-                width: 10px;
-                height: 10px;
-                border: 3px solid var(--primary-green);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 20;
-                transform: translate(-50%, -50%);
-                animation: shockwave-expand 0.6s ease-out forwards;
-            `;
-
-            document.body.appendChild(shockwave);
-
-            setTimeout(() => {
-                shockwave.remove();
-            }, 600);
-        }
-
-        // إضافة CSS للموجة الصدمية
-        const shockwaveCSS = `
-            @keyframes shockwave-expand {
-                0% {
-                    transform: translate(-50%, -50%) scale(0);
-                    opacity: 1;
-                    border-width: 3px;
-                }
-                50% {
-                    transform: translate(-50%, -50%) scale(5);
-                    opacity: 0.5;
-                    border-width: 2px;
-                }
-                100% {
-                    transform: translate(-50%, -50%) scale(10);
-                    opacity: 0;
-                    border-width: 1px;
-                }
-            }
-        `;
-
-        const style = document.createElement('style');
-        style.textContent = shockwaveCSS;
-        document.head.appendChild(style);
-
-        // تأثيرات عشوائية
-        setInterval(() => {
-            if (Math.random() < 0.1) {
-                document.body.style.filter = 'hue-rotate(' + Math.random() * 360 + 'deg)';
+            if (e.key === 'Enter') {
+                document.body.style.filter = 'hue-rotate(90deg)';
                 setTimeout(() => {
                     document.body.style.filter = '';
-                }, 100);
+                }, 200);
+            }
+        });
+
+        // تنظيف دوري للذاكرة
+        setInterval(() => {
+            // إزالة العناصر الزائدة إذا تجاوزت الحد المسموح
+            const matrixChars = document.querySelectorAll('.matrix-char');
+            const particles = document.querySelectorAll('.particle');
+
+            if (matrixChars.length > MAX_MATRIX_CHARS) {
+                for (let i = MAX_MATRIX_CHARS; i < matrixChars.length; i++) {
+                    matrixChars[i].remove();
+                }
+            }
+
+            if (particles.length > MAX_PARTICLES) {
+                for (let i = MAX_PARTICLES; i < particles.length; i++) {
+                    particles[i].remove();
+                }
             }
         }, 5000);
 
-        // رسالة الترحيب
+        // رسالة ترحيب مبسطة
         setTimeout(() => {
-            console.log(`
-    ⚡💀⚡ LEGENDARY HACKER PROFILE ACTIVATED ⚡💀⚡
-    
-    🔥 Elite Features Loaded:
-    ✓ Enhanced Matrix Effects
-    ✓ Energy Orb System  
-    ✓ Interactive Audio
-    ✓ Dynamic Lighting
-    ✓ Shockwave Effects
-    ✓ Advanced Animations
-    
-    💎 Welcome to the Next Level! 💎
-            `);
+            console.log('🔥 LEGENDARY HACKER PROFILE - OPTIMIZED VERSION 🔥');
         }, 3000);
     </script>
 </body>
